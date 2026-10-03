@@ -1,5 +1,5 @@
 --[[
-    vysesaint UI framework — v9.9
+    vysesaint UI framework — v2
     language: Luau | target: Roblox | executor: Nexomia
     aim assist + silent aim: target pool = ESP-visible only
     player esp + npc esp + anti-afk + config
