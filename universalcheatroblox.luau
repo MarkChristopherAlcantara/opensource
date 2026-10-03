@@ -1,7 +1,7 @@
 -- language: Luau, executor: Nexomia, universal Roblox build
 -- Vysesaint — 2D box + bone ESP + snapline + name + distance.
 -- Players AND NPCs/bots. R15 and R6 rigs. FOV shared by aimbot + silent aim.
--- Anti-AFK in Misc. Tabs: Aim / Visual / Misc.
+-- Anti-AFK in Misc. INSERT or DELETE toggles menu.
 
 local Players           = game:GetService("Players")
 local RunService        = game:GetService("RunService")
@@ -53,6 +53,7 @@ local COL = {
     accent2 = Color3.fromRGB(255, 96, 118),
     text    = Color3.fromRGB(240, 240, 245),
     subtext = Color3.fromRGB(150, 150, 168),
+    discord = Color3.fromRGB(88, 101, 242),
 }
 
 -- ============ ACCENT REGISTRY ============
@@ -157,6 +158,60 @@ TitleSub.TextXAlignment = Enum.TextXAlignment.Left
 TitleSub.Parent = Header
 bindAccent(TitleSub, "TextColor3")
 
+-- ============ DISCORD BADGE ============
+-- Hand-drawn Clyde mascot — blurple rounded face with two eyes.
+-- No external asset, so it renders on every executor.
+local DiscordBadge = Instance.new("Frame")
+DiscordBadge.Size = UDim2.new(0, 128, 0, 22)
+DiscordBadge.Position = UDim2.new(1, -222, 0.5, -11)
+DiscordBadge.BackgroundColor3 = COL.panel2
+DiscordBadge.BackgroundTransparency = 0.15
+DiscordBadge.BorderSizePixel = 0
+DiscordBadge.Parent = Header
+
+local dbCorner = Instance.new("UICorner"); dbCorner.CornerRadius = UDim.new(0, 5); dbCorner.Parent = DiscordBadge
+local dbStroke = Instance.new("UIStroke"); dbStroke.Color = COL.discord; dbStroke.Transparency = 0.55; dbStroke.Parent = DiscordBadge
+
+-- Clyde face — blurple blob
+local ClydeBox = Instance.new("Frame")
+ClydeBox.Size = UDim2.new(0, 15, 0, 12)
+ClydeBox.Position = UDim2.new(0, 5, 0.5, -6)
+ClydeBox.BackgroundColor3 = COL.discord
+ClydeBox.BorderSizePixel = 0
+ClydeBox.Parent = DiscordBadge
+local cbCorner = Instance.new("UICorner"); cbCorner.CornerRadius = UDim.new(0, 6); cbCorner.Parent = ClydeBox
+
+-- left eye
+local Eye1 = Instance.new("Frame")
+Eye1.Size = UDim2.new(0, 3, 0, 3)
+Eye1.Position = UDim2.new(0, 3, 0.5, -1.5)
+Eye1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Eye1.BorderSizePixel = 0
+Eye1.Parent = ClydeBox
+local e1c = Instance.new("UICorner"); e1c.CornerRadius = UDim.new(1, 0); e1c.Parent = Eye1
+
+-- right eye
+local Eye2 = Instance.new("Frame")
+Eye2.Size = UDim2.new(0, 3, 0, 3)
+Eye2.Position = UDim2.new(1, -6, 0.5, -1.5)
+Eye2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Eye2.BorderSizePixel = 0
+Eye2.Parent = ClydeBox
+local e2c = Instance.new("UICorner"); e2c.CornerRadius = UDim.new(1, 0); e2c.Parent = Eye2
+
+-- username
+local DbText = Instance.new("TextLabel")
+DbText.Size = UDim2.new(1, -26, 1, 0)
+DbText.Position = UDim2.new(0, 24, 0, 0)
+DbText.BackgroundTransparency = 1
+DbText.Text = "marky.cool"
+DbText.TextColor3 = COL.text
+DbText.Font = Enum.Font.GothamBold
+DbText.TextSize = 11
+DbText.TextXAlignment = Enum.TextXAlignment.Left
+DbText.Parent = DiscordBadge
+
+-- ============ HEADER BUTTONS ============
 local function makeHeaderBtn(text, isAccent)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(0, 26, 0, 26)
@@ -1145,9 +1200,6 @@ oldIndex = hookmetamethod(game, "__index", function(self, key)
 end)
 
 -- ============ ANTI-AFK ============
--- Fires a VirtualUser input every 60s. Roblox's idle kick resets on any
--- input event the client raises — CaptureController + Button1 press is
--- the standard incognito path that doesn't steal focus.
 local antiAfkThread = nil
 
 local function startAntiAfk()
@@ -1211,10 +1263,10 @@ track(RunService.RenderStepped:Connect(function()
     aimbotStep()
 end))
 
--- ============ UI TOGGLE ============
+-- ============ UI TOGGLE — INSERT or DELETE ============
 track(UserInputService.InputBegan:Connect(function(input, gp)
     if gp or KILLED then return end
-    if input.KeyCode == Enum.KeyCode.Insert then
+    if input.KeyCode == Enum.KeyCode.Insert or input.KeyCode == Enum.KeyCode.Delete then
         ScreenGui.Enabled = not ScreenGui.Enabled
     end
 end))
@@ -1257,4 +1309,4 @@ end
 CloseBtn.MouseButton1Click:Connect(killMenu)
 killBtn.MouseButton1Click:Connect(killMenu)
 
-print("[Vysesaint] loaded — Insert toggles menu · X to unload")
+print("[Vysesaint] loaded — INSERT or DELETE toggles menu · X to unload")
